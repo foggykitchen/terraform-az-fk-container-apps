@@ -1,0 +1,12 @@
+resource_group_name = "fk-ca-acr-rg"
+location            = "westeurope"
+image_tag           = "latest"
+public_source_image = "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+import_image        = true
+admin_username      = "azureuser"
+vm_size             = "Standard_B1s"
+
+tags = {
+  project = "foggykitchen"
+  env     = "dev"
+}

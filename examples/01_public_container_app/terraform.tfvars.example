@@ -1,0 +1,7 @@
+resource_group_name = "fk-ca-public-rg"
+location            = "westeurope"
+
+tags = {
+  project = "foggykitchen"
+  env     = "dev"
+}
