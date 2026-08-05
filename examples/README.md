@@ -13,7 +13,7 @@ These examples are part of the [FoggyKitchen.com training ecosystem](https://fog
 |:-------:|:------|:-----------|
 | 01 | **Public Container App** | Container Apps Environment, Log Analytics, public image, external ingress |
 | 02 | **Internal VNet Integration** | delegated subnet, internal load balancer, internal ingress, Bastion test path |
-| 03 | **ACR Image With Managed Identity** | same private path as 02, ACR, system-assigned identity, AcrPull RBAC, private image pull |
+| 03 | **ACR Image With Managed Identity** | same private path as 02, ACR, user-assigned identity, AcrPull RBAC, private image pull |
 
 ---
 
@@ -46,7 +46,7 @@ The recommended learning path is sequential:
 ## Design Principles
 
 - One example = one architectural goal
-- Log Analytics, VNet, ACR, and RBAC stay in their dedicated FoggyKitchen modules
+- Log Analytics, VNet, Private DNS, ACR, Managed Identity, and RBAC stay in their dedicated FoggyKitchen modules
 - Public Container Apps use ACA-managed external ingress, not a separate Azure Public IP resource
 - Container Apps internal ingress replaces the separate load balancer composition used in the OCI private container instance example
 - Bastion and private test VMs are composed in examples where a private endpoint must be exercised

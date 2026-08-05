@@ -13,12 +13,12 @@ module "container_app" {
 
   registries = [{
     server   = module.acr.acr_login_server
-    identity = azurerm_user_assigned_identity.container_app.id
+    identity = module.identity.id
   }]
 
   identity = {
     type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.container_app.id]
+    identity_ids = [module.identity.id]
   }
 
   containers = [{

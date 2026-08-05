@@ -1,7 +1,8 @@
-resource "azurerm_user_assigned_identity" "container_app" {
-  name                = "fk-ca-acr-identity-${random_string.suffix.result}"
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
+module "identity" {
+  source = "github.com/foggykitchen/terraform-az-fk-managed-identity"
 
-  tags = var.tags
+  name                = "fk-ca-acr-identity-${random_string.suffix.result}"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  tags                = var.tags
 }

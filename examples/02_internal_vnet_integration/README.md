@@ -26,7 +26,7 @@ This deployment creates:
 - One regular subnet reserved for test clients
 - One `AzureBastionSubnet`
 - One Log Analytics Workspace
-- One Private DNS Zone matching the Container Apps Environment default domain
+- One Private DNS Zone matching the Container Apps Environment default domain through **terraform-az-fk-private-dns**
 - One Azure Bastion host with its managed Public IP
 - One private Linux test VM
 - One Container Apps Environment with internal load balancing enabled
@@ -39,9 +39,9 @@ endpoint is reachable from the VNet path, not from the public internet.
 The Bastion Public IP is for browser/native-client access to the private test VM;
 it is not attached to the Container App.
 Internal Container Apps ingress requires private DNS for clients in the VNet.
-This example creates a Private DNS Zone that matches the environment default
-domain, links it to the VNet, and maps `@`, `*`, and `*.internal` records to the
-environment static IP.
+This example uses **terraform-az-fk-private-dns** to create a Private DNS Zone
+that matches the environment default domain, link it to the VNet, and map `@`,
+`*`, and `*.internal` records to the environment static IP.
 
 ---
 

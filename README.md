@@ -2,7 +2,7 @@
 
 This repository contains a reusable Terraform / OpenTofu module and progressive examples for deploying Azure Container Apps as the Azure "bring your own container image" runtime in the FoggyKitchen catalog.
 
-It is part of the [FoggyKitchen.com training ecosystem](https://foggykitchen.com/courses-2/) and is designed to compose cleanly with reusable Azure infrastructure modules such as `terraform-az-fk-log-analytics`, `terraform-az-fk-vnet`, `terraform-az-fk-acr`, `terraform-az-fk-rbac`, `terraform-az-fk-bastion`, and `terraform-az-fk-compute`.
+It is part of the [FoggyKitchen.com training ecosystem](https://foggykitchen.com/courses-2/) and is designed to compose cleanly with reusable Azure infrastructure modules such as `terraform-az-fk-log-analytics`, `terraform-az-fk-vnet`, `terraform-az-fk-private-dns`, `terraform-az-fk-acr`, `terraform-az-fk-managed-identity`, `terraform-az-fk-rbac`, `terraform-az-fk-bastion`, and `terraform-az-fk-compute`.
 
 Support expectations are documented in [SUPPORT.md](SUPPORT.md).
 
@@ -149,17 +149,19 @@ module "container_app" {
 ### ACR pull with managed identity
 
 ```hcl
-resource "azurerm_user_assigned_identity" "container_app" {
+module "identity" {
+  source = "github.com/foggykitchen/terraform-az-fk-managed-identity"
+
   name                = "fk-ca-acr-identity"
-  resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
 }
 
 module "rbac" {
   source = "github.com/foggykitchen/terraform-az-fk-rbac"
 
   scope                = module.acr.acr_id
-  principal_id         = azurerm_user_assigned_identity.container_app.principal_id
+  principal_id         = module.identity.principal_id
   role_definition_name = "AcrPull"
 }
 
@@ -176,12 +178,12 @@ module "container_app" {
 
   registries = [{
     server   = module.acr.acr_login_server
-    identity = azurerm_user_assigned_identity.container_app.id
+    identity = module.identity.id
   }]
 
   identity = {
     type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.container_app.id]
+    identity_ids = [module.identity.id]
   }
 
   containers = [{

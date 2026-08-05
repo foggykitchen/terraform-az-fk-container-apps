@@ -43,11 +43,11 @@ output "test_clients_subnet_id" {
 }
 
 output "private_dns_zone_names" {
-  value = [azurerm_private_dns_zone.container_apps_environment.name]
+  value = module.private_dns.private_dns_zone_names
 }
 
 output "container_apps_private_dns_record_names" {
-  value = keys(azurerm_private_dns_a_record.container_apps_environment)
+  value = values(module.private_dns.private_dns_a_record_names)
 }
 
 output "bastion_name" {

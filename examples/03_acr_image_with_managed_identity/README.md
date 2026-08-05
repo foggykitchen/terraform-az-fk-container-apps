@@ -3,7 +3,8 @@
 In this example, we deploy an **Azure Container Registry (ACR)** through
 **terraform-az-fk-acr** and an **Azure Container App** through
 **terraform-az-fk-container-apps**. The app pulls the image from ACR with a
-user-assigned managed identity, not ACR admin credentials.
+user-assigned managed identity from **terraform-az-fk-managed-identity**, not ACR
+admin credentials.
 
 This example keeps the same private network and Bastion test path as
 `02_internal_vnet_integration`. The difference is the workload image path: the
@@ -26,22 +27,22 @@ This deployment creates:
   - one regular test client subnet
   - one `AzureBastionSubnet`
 - One Log Analytics Workspace
-- One Private DNS Zone matching the Container Apps Environment default domain
+- One Private DNS Zone matching the Container Apps Environment default domain through **terraform-az-fk-private-dns**
 - One Azure Container Registry with admin credentials disabled
 - One public Microsoft sample image imported into ACR as `foggykitchen-hello-world`
 - One Azure Bastion host with its managed Public IP
 - One private Linux test VM
 - One Container Apps Environment with internal load balancing enabled
-- One user-assigned managed identity for ACR image pulls
+- One user-assigned managed identity for ACR image pulls through **terraform-az-fk-managed-identity**
 - One Container App using that managed identity
 - One `AcrPull` role assignment through **terraform-az-fk-rbac**
 
 The Container App ingress is enabled for traffic from outside the Container Apps
 Environment, while the Environment itself uses an internal load balancer. The app
 endpoint is reachable from the VNet path, not from the public internet. This
-example creates a Private DNS Zone that matches the environment default domain,
-links it to the VNet, and maps `@`, `*`, and `*.internal` records to the
-environment static IP.
+example uses **terraform-az-fk-private-dns** to create a Private DNS Zone that
+matches the environment default domain, link it to the VNet, and map `@`, `*`,
+and `*.internal` records to the environment static IP.
 
 The Container App registry block uses the user-assigned identity resource ID.
 The `AcrPull` role assignment is created before the Container App, so the first
