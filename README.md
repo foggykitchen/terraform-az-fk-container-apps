@@ -54,6 +54,22 @@ pattern where a public IP is composed with a separate load balancer resource, so
 
 ---
 
+## Pipeline-managed application deployments
+
+Set `deployment_managed_by_pipeline = true` before creating an application when a CI/CD pipeline will update its image. The module creates the initial revision from `containers[0].image`, then ignores only changes to that image. Terraform continues managing CPU, memory, environment variables, scaling, ingress, registry authentication and identity. This mode requires exactly one container. The pipeline must preserve the container name and must not modify other Terraform-managed settings or set a custom revision suffix.
+
+The default is `false`, preserving Terraform ownership of images. Existing default-mode applications migrate automatically to the indexed resource address through a `moved` block, without replacement. Switching modes on an existing application requires an explicit state migration. Back up state and run:
+
+```bash
+tofu state mv 'module.container_app.azurerm_container_app.this[0]' 'module.container_app.azurerm_container_app.pipeline[0]'
+```
+
+Run that command before planning the switch to `true`; reverse the addresses for `false`. Adjust the module path to your configuration. Without that migration, the mode change plans replacement. Review the plan before applying.
+
+Builds and deployments remain in caller-owned YAML, outside this module.
+
+---
+
 ## Provider Notes
 
 The module contract follows the current AzureRM provider resource schemas for:
@@ -216,6 +232,7 @@ module "container_app" {
 | `zone_redundancy_enabled` | `bool` | no | Whether zone redundancy is enabled |
 | `workload_profiles` | `list(object)` | no | Optional environment workload profiles |
 | `revision_mode` | `string` | no | Container App revision mode |
+| `deployment_managed_by_pipeline` | `bool` | no | Default false; pipeline owns the single container image after creation |
 | `containers` | `list(object)` | yes | Container definitions |
 | `min_replicas` | `number` | no | Minimum replicas |
 | `max_replicas` | `number` | no | Maximum replicas |
@@ -224,6 +241,7 @@ module "container_app" {
 | `registries` | `list(object)` | no | Registry authentication blocks |
 | `secrets` | `map(object)` | no | Container App secrets |
 | `identity` | `object` | no | Managed identity assigned to the Container App |
+| `workload_profile_name` | `string` | no | Workload profile used by the application |
 | `tags` | `map(string)` | no | Common tags |
 
 ### `containers` object schema
@@ -278,6 +296,7 @@ secrets = map(object({
 | `environment_default_domain` | Created Container Apps Environment default domain |
 | `environment_static_ip_address` | Created Container Apps Environment static IP address |
 | `latest_revision_fqdn` | Latest Container App revision FQDN |
+| `fqdn` | Container App ingress FQDN |
 | `latest_revision_name` | Latest Container App revision name |
 | `principal_id` | Container App managed identity principal ID |
 | `identity` | Container App managed identity attributes |

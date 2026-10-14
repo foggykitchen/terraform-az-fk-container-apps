@@ -246,3 +246,13 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "deployment_managed_by_pipeline" {
+  description = "Whether the deployment pipeline owns the single container image after initial creation. Choose before deployment; changing mode requires a state move."
+  type        = bool
+  default     = false
+  validation {
+    condition     = !var.deployment_managed_by_pipeline || length(var.containers) == 1
+    error_message = "Pipeline-managed deployments require exactly one container."
+  }
+}

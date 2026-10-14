@@ -1,10 +1,10 @@
 output "id" {
-  value       = azurerm_container_app.this.id
+  value       = local.container_app.id
   description = "Container App resource ID."
 }
 
 output "name" {
-  value       = azurerm_container_app.this.name
+  value       = local.container_app.name
   description = "Container App name."
 }
 
@@ -29,26 +29,26 @@ output "environment_static_ip_address" {
 }
 
 output "latest_revision_fqdn" {
-  value       = azurerm_container_app.this.latest_revision_fqdn
+  value       = local.container_app.latest_revision_fqdn
   description = "Latest Container App revision FQDN."
 }
 
 output "fqdn" {
-  value       = try(azurerm_container_app.this.ingress[0].fqdn, null)
+  value       = try(local.container_app.ingress[0].fqdn, null)
   description = "Container App ingress FQDN."
 }
 
 output "latest_revision_name" {
-  value       = azurerm_container_app.this.latest_revision_name
+  value       = local.container_app.latest_revision_name
   description = "Latest Container App revision name."
 }
 
 output "principal_id" {
-  value       = try(azurerm_container_app.this.identity[0].principal_id, null)
+  value       = try(local.container_app.identity[0].principal_id, null)
   description = "Container App managed identity principal ID."
 }
 
 output "identity" {
-  value       = azurerm_container_app.this.identity
+  value       = local.container_app.identity
   description = "Container App managed identity attributes."
 }
